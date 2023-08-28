@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "9488527912",
+    "project_id": "noteit-sairajpatil108",
+    "storage_bucket": "noteit-sairajpatil108.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:9488527912:android:0847f52712f885091c7b1d",
+        "android_client_info": {
+          "package_name": "com.example.noteit"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "9488527912-mmjetal9pl8cgc0bttkvd3vscuvb4epm.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCo_T5s-89ppZRitFVt-EnlBQEAblXJnWs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "9488527912-mmjetal9pl8cgc0bttkvd3vscuvb4epm.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
