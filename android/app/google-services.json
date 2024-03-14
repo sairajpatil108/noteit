@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "986529406150",
+    "project_id": "noteit-4d8ee",
+    "storage_bucket": "noteit-4d8ee.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:986529406150:android:5394a6fbe29f306be78bc7",
+        "android_client_info": {
+          "package_name": "com.example.noteit"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "986529406150-f6k9ovhpsdh0qnj2brrhbk1gs1mce5l2.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCCPRkxn8PCx9o1zRAGjZO-cYMDY2RAkNs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "986529406150-f6k9ovhpsdh0qnj2brrhbk1gs1mce5l2.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "986529406150-2q99lojcs15uiai89ucb28d2a26s3r5m.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.noteit.RunnerTests"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
