@@ -65,7 +65,7 @@ class _MyHomePageState extends State<MyHomePage> {
               Expanded(child: SizedBox()),
               Padding(
                 padding: const EdgeInsets.fromLTRB(0, 0, 10, 0),
-                child: profilePhoto(),
+                child: profilePhoto(context),
               ),
             ],
           ),

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:noteit/ui/loginPage.dart';
 
 class taskpage extends StatefulWidget {
   const taskpage({super.key});
@@ -21,12 +20,7 @@ class _taskpageState extends State<taskpage> {
               color: Color.fromARGB(255, 255, 201, 201),
               borderRadius: BorderRadius.circular(20),
             ),
-            child: profilePhoto(),
           ),
-          profileName()
-          // Card(
-          //     color: Color.fromARGB(255, 255, 201, 201),
-          //     child: ListTile(leading: Checkbox_custom(), title: TextField())),
         ],
       ),
       floatingActionButton: FloatingActionButton(
