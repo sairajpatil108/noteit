@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:lottie/lottie.dart';
 import 'package:noteit/main.dart';
 import 'package:sign_in_button/sign_in_button.dart';
 
@@ -35,13 +36,19 @@ class _loginPageState extends State<loginPage> {
   Widget _googleSignInButton() {
     return Center(
       child: SizedBox(
-          height: 50,
-          child: SignInButton(
-            Buttons.google,
-            text: 'Sign in with Google',
-            onPressed: () {
-              _handleGoogleSignin();
-            },
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Lottie.asset('assets/animation_lmdqbm1f.json', height: 200),
+              SignInButton(
+                Buttons.google,
+                text: 'Sign in with Google',
+                onPressed: () {
+                  _handleGoogleSignin();
+                },
+              ),
+            ],
           )),
     );
   }
@@ -91,10 +98,8 @@ Widget profilePhoto(BuildContext context) {
                 SizedBox(height: 20),
                 ElevatedButton(
                   onPressed: () {
-                    // Handle logout action here
-                    // Example: Call logout function
                     _logout();
-                    Navigator.pop(context); // Close the dialog
+                    Navigator.pop(context); 
                   },
                   child: Text('Logout'),
                 ),
@@ -125,4 +130,9 @@ void _logout() {
 
 Widget profileName() {
   return Container(child: Text(_user!.email!, style: TextStyle(fontSize: 15)));
+}
+
+Future<bool> isUserLoggedIn() async {
+  final _user = FirebaseAuth.instance.currentUser;
+  return _user != null; // Return true if user is logged in, false otherwise
 }
