@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 import 'package:noteit/main.dart';
+import 'package:noteit/ui/linkpage.dart';
 import 'package:sign_in_button/sign_in_button.dart';
 
 class loginPage extends StatefulWidget {

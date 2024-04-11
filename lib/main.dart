@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 import 'package:noteit/firebase_options.dart';
@@ -12,7 +12,21 @@ import 'package:noteit/ui/theme.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+
+  if (kIsWeb) {
+    await Firebase.initializeApp(
+        options: FirebaseOptions(
+            apiKey: "AIzaSyAv1Cs3oC-SYEVBkMePc9LyxdPKLvPt_mM",
+            authDomain: "noteit-4d8ee.firebaseapp.com",
+            projectId: "noteit-4d8ee",
+            storageBucket: "noteit-4d8ee.appspot.com",
+            messagingSenderId: "986529406150",
+            appId: "1:986529406150:web:d237d34fecbbddc4e78bc7",
+            measurementId: "G-M6QPPBTJ1Y"));
+  } else {
+    await Firebase.initializeApp(
+        options: DefaultFirebaseOptions.currentPlatform);
+  }
 
   FirebaseFirestore.instance.settings =
       const Settings(persistenceEnabled: true);

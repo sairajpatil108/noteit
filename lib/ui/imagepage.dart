@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:noteit/ui/fullScreenImage.dart';
+import 'package:lottie/lottie.dart'; // Import Lottie package
 
 class ImagePage extends StatefulWidget {
   const ImagePage({Key? key}) : super(key: key);
@@ -47,27 +48,28 @@ class _ImagePageState extends State<ImagePage> {
     }
   }
 
-Future<void> _uploadImage() async {
-  final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
-  if (pickedFile != null) {
-    File imageFile = File(pickedFile.path);
-    String userId = _auth.currentUser?.uid ?? 'unknown';
-    String fileName =
-        '${userId}_${DateTime.now().millisecondsSinceEpoch}.jpg';
+  Future<void> _uploadImage() async {
+    final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
+    if (pickedFile != null) {
+      File imageFile = File(pickedFile.path);
+      String userId = _auth.currentUser?.uid ?? 'unknown';
+      String fileName =
+          '${userId}_${DateTime.now().millisecondsSinceEpoch}.jpg';
 
-    Reference firebaseStorageRef =
-        FirebaseStorage.instance.ref().child('images/$userId/$fileName');
+      Reference firebaseStorageRef =
+          FirebaseStorage.instance.ref().child('images/$userId/$fileName');
 
-    UploadTask uploadTask = firebaseStorageRef.putFile(imageFile);
+      UploadTask uploadTask = firebaseStorageRef.putFile(imageFile);
 
-    await uploadTask.whenComplete(() => setState(() {
-      _loadImages();
-      Fluttertoast.showToast(msg: 'Image uploaded successfully!');
-    }));
-  } else {
-    print('No image selected.');
+      await uploadTask.whenComplete(() => setState(() {
+            _loadImages();
+            Fluttertoast.showToast(msg: 'Image uploaded successfully!');
+          }));
+    } else {
+      print('No image selected.');
+    }
   }
-}
+
   void _deleteImage(String imageUrl) async {
     await FirebaseStorage.instance.refFromURL(imageUrl).delete();
     _loadImages();
@@ -85,7 +87,13 @@ Future<void> _uploadImage() async {
         child: const Icon(Icons.add_a_photo),
       ),
       body: imageUrls.isEmpty
-          ? Center(child: CircularProgressIndicator())
+          ? Center(
+              child: Lottie.asset(
+                'assets/loading.json',
+                height: 80,
+                width: 80,
+              ),
+            )
           : GridView.builder(
               gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 2,

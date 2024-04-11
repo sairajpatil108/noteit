@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:noteit/ui/addNote.dart';
-import 'addNotePage.dart';
+import 'package:noteit/ui/completenoteView.dart';
+
 
 class Notepage extends StatefulWidget {
   const Notepage({Key? key}) : super(key: key);
@@ -86,22 +87,37 @@ class _NotepageState extends State<Notepage> {
           itemCount: snapshot.data!.docs.length,
           itemBuilder: (context, index) {
             var note = snapshot.data!.docs[index];
-            return Card(
-              child: Padding(
-                padding: EdgeInsets.all(8.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      note['title'],
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 16.0,
+            return GestureDetector(
+              onTap: () {
+                // Navigate to the complete notes page
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => CompleteNotePage(note: note)),
+                );
+              },
+              child: Card(
+                child: Padding(
+                  padding: EdgeInsets.all(8.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        note['title'],
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16.0,
+                        ),
                       ),
-                    ),
-                    SizedBox(height: 8.0),
-                    Text(note['content']),
-                  ],
+                      SizedBox(height: 8.0),
+                      Expanded(
+                        child: Text(
+                          note['content'],
+                          maxLines: 5, // Adjust max lines as needed
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             );
