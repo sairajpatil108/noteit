@@ -67,7 +67,7 @@ class _TaskPageState extends State<TaskPage> {
                   color: Color.fromARGB(255, 0, 0, 0),
                 ),
               ),
-              direction: DismissDirection.vertical,
+              direction: DismissDirection.endToStart,
               onDismissed: (direction) {
                 _deleteTask(task.id);
               },
