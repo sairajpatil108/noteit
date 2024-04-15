@@ -36,7 +36,7 @@ const lightColorScheme = ColorScheme(
 
 const darkColorScheme = ColorScheme(
   brightness: Brightness.dark,
-  primary: Color(0xFFFFB779),
+  primary: Color.fromRGBO(255, 183, 121, 1),
   onPrimary: Color.fromARGB(255, 167, 96, 20),
   primaryContainer: Color.fromARGB(255, 245, 158, 58),
   onPrimaryContainer: Color(0xFFFFDCC1),

@@ -1,3 +1,6 @@
+// ignore_for_file: avoid_print
+
+import 'dart:async';
 import 'dart:io';
 
 import 'package:firebase_auth/firebase_auth.dart';
@@ -5,8 +8,8 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:lottie/lottie.dart';
 import 'package:noteit/ui/fullScreenImage.dart';
-import 'package:lottie/lottie.dart'; // Import Lottie package
 
 class ImagePage extends StatefulWidget {
   const ImagePage({Key? key}) : super(key: key);
@@ -20,6 +23,7 @@ class _ImagePageState extends State<ImagePage> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
   List<String> imageUrls = [];
+  bool _isLoading = false;
 
   @override
   void initState() {
@@ -27,7 +31,17 @@ class _ImagePageState extends State<ImagePage> {
     _loadImages();
   }
 
+  @override
+  void dispose() {
+    super.dispose();
+    // No need to dispose ImagePicker
+  }
+
   Future<void> _loadImages() async {
+    setState(() {
+      _isLoading = true;
+    });
+
     User? user = _auth.currentUser;
     if (user != null) {
       String userId = user.uid;
@@ -42,13 +56,21 @@ class _ImagePageState extends State<ImagePage> {
         urls.add(downloadURL);
       });
 
-      setState(() {
-        imageUrls = urls;
-      });
+      // Check if the widget is mounted before calling setState
+      if (mounted) {
+        setState(() {
+          imageUrls = urls;
+          _isLoading = false;
+        });
+      }
     }
   }
 
   Future<void> _uploadImage() async {
+    setState(() {
+      _isLoading = true;
+    });
+
     final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
     if (pickedFile != null) {
       File imageFile = File(pickedFile.path);
@@ -61,75 +83,84 @@ class _ImagePageState extends State<ImagePage> {
 
       UploadTask uploadTask = firebaseStorageRef.putFile(imageFile);
 
-      await uploadTask.whenComplete(() => setState(() {
-            _loadImages();
-            Fluttertoast.showToast(msg: 'Image uploaded successfully!');
-          }));
+      await uploadTask.whenComplete(() {
+        setState(() {
+          _isLoading = false;
+          _loadImages(); // Reload images after upload
+          Fluttertoast.showToast(msg: 'Image uploaded successfully!');
+        });
+      });
     } else {
       print('No image selected.');
+      setState(() {
+        _isLoading = false; // Reset isLoading flag if no image is selected
+      });
     }
   }
 
   void _deleteImage(String imageUrl) async {
     await FirebaseStorage.instance.refFromURL(imageUrl).delete();
-    _loadImages();
-    Navigator.pop(context);
+    // Check if the widget is mounted before calling setState
+    if (mounted) {
+      setState(() {
+        _loadImages();
+        Navigator.pop(context);
+      });
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Image Gallery'),
-      ),
       floatingActionButton: FloatingActionButton(
         onPressed: _uploadImage,
-        child: const Icon(Icons.add_a_photo),
+        child: const Icon(Icons.add_a_photo_rounded),
       ),
-      body: imageUrls.isEmpty
+      body: _isLoading
           ? Center(
-              child: Lottie.asset(
-                'assets/loading.json',
-                height: 80,
-                width: 80,
-              ),
+              child:
+                  Lottie.asset('assets/loading.json', height: 120, width: 120),
             )
-          : GridView.builder(
-              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
-                crossAxisSpacing: 8.0,
-                mainAxisSpacing: 8.0,
-              ),
-              itemCount: imageUrls.length,
-              itemBuilder: (context, index) {
-                return GestureDetector(
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => FullScreenImagePage(
-                          imageUrl: imageUrls[index],
-                          onDelete: () => _deleteImage(imageUrls[index]),
+          : imageUrls.isEmpty
+              ? const Center(
+                  child: Text('No images found.'),
+                )
+              : GridView.builder(
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 2,
+                    crossAxisSpacing: 8.0,
+                    mainAxisSpacing: 8.0,
+                  ),
+                  itemCount: imageUrls.length,
+                  itemBuilder: (context, index) {
+                    return GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => FullScreenImagePage(
+                              imageUrl: imageUrls[index],
+                              onDelete: () => _deleteImage(imageUrls[index]),
+                            ),
+                          ),
+                        );
+                      },
+                      child: Card(
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(
+                                10), // Adjust the value as needed
+                            child: Image.network(
+                              imageUrls[index],
+                              fit: BoxFit.cover,
+                            ),
+                          ),
                         ),
                       ),
                     );
                   },
-                  child: Card(
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(
-                            10), // Adjust the value as needed
-                        child: Image.network(
-                          imageUrls[index],
-                          fit: BoxFit.cover,
-                        ),
-                      ),
-                    ),
-                  ),
-                );
-              },
-            ),
+                ),
     );
   }
 }

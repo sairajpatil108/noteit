@@ -1,5 +1,8 @@
-import 'package:flutter/material.dart';
+// ignore_for_file: library_private_types_in_public_api, use_build_context_synchronously
+
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
 
 class AddNotePage extends StatefulWidget {
   const AddNotePage({Key? key}) : super(key: key);
@@ -18,12 +21,12 @@ class _AddNotePageState extends State<AddNotePage> {
       showDialog(
         context: context,
         builder: (context) => AlertDialog(
-          title: Text('Error'),
-          content: Text('Please fill in both title and content.'),
+          title: const Text('Error'),
+          content: const Text('Please fill in both title and content.'),
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(context),
-              child: Text('OK'),
+              child: const Text('OK'),
             ),
           ],
         ),
@@ -33,10 +36,11 @@ class _AddNotePageState extends State<AddNotePage> {
 
     try {
       // Add the note to Firestore
-      await FirebaseFirestore.instance.collection('notes').add({
+      await FirebaseFirestore.instance.collection('user_notes').add({
         'title': _titleController.text,
         'content': _contentController.text,
         'timestamp': FieldValue.serverTimestamp(),
+        'userId': FirebaseAuth.instance.currentUser!.uid,
       });
 
       // Close the add note page
@@ -46,12 +50,12 @@ class _AddNotePageState extends State<AddNotePage> {
       showDialog(
         context: context,
         builder: (context) => AlertDialog(
-          title: Text('Error'),
+          title: const Text('Error'),
           content: Text('Failed to add note: $error'),
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(context),
-              child: Text('OK'),
+              child: const Text('OK'),
             ),
           ],
         ),
@@ -63,31 +67,31 @@ class _AddNotePageState extends State<AddNotePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Add Note'),
+        title: const Text('Add Note'),
       ),
       body: Padding(
-        padding: EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             TextField(
               controller: _titleController,
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 labelText: 'Title',
               ),
             ),
-            SizedBox(height: 16.0),
+            const SizedBox(height: 16.0),
             TextField(
               controller: _contentController,
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 labelText: 'Content',
               ),
               maxLines: 4,
             ),
-            SizedBox(height: 16.0),
+            const SizedBox(height: 16.0),
             ElevatedButton(
               onPressed: _addNote,
-              child: Text('Save'),
+              child: const Text('Save'),
             ),
           ],
         ),

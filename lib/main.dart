@@ -15,7 +15,7 @@ void main() async {
 
   if (kIsWeb) {
     await Firebase.initializeApp(
-        options: FirebaseOptions(
+        options: const FirebaseOptions(
             apiKey: "AIzaSyAv1Cs3oC-SYEVBkMePc9LyxdPKLvPt_mM",
             authDomain: "noteit-4d8ee.firebaseapp.com",
             projectId: "noteit-4d8ee",
@@ -90,8 +90,8 @@ class _MyHomePageState extends State<MyHomePage> {
             SizedBox(
                 height: 40,
                 width: 40,
-                child: Lottie.asset('assets/animation_lmdqbm1f.json')),
-            Expanded(child: SizedBox()),
+                child: Lottie.asset('assets/diary.json')),
+            const Expanded(child: SizedBox()),
             Padding(
               padding: const EdgeInsets.fromLTRB(0, 0, 10, 0),
               child: profilePhoto(context),

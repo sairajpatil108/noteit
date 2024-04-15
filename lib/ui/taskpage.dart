@@ -1,6 +1,9 @@
-import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:intl/intl.dart';
+import 'package:lottie/lottie.dart';
 
 class TaskPage extends StatefulWidget {
   const TaskPage({Key? key}) : super(key: key);
@@ -15,10 +18,10 @@ class _TaskPageState extends State<TaskPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Tasks'),
+      body: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: _buildTasksList(),
       ),
-      body: _buildTasksList(),
       floatingActionButton: FloatingActionButton(
         child: const Icon(Icons.add),
         onPressed: () {
@@ -29,8 +32,17 @@ class _TaskPageState extends State<TaskPage> {
   }
 
   Widget _buildTasksList() {
+    final currentUser = FirebaseAuth.instance.currentUser;
+    if (currentUser == null) {
+      // If user is not logged in, return an empty container
+      return Container();
+    }
+
     return StreamBuilder<QuerySnapshot>(
-      stream: FirebaseFirestore.instance.collection('tasks').snapshots(),
+      stream: FirebaseFirestore.instance
+          .collection('tasks')
+          .where('userId', isEqualTo: currentUser.uid)
+          .snapshots(),
       builder: (context, snapshot) {
         if (snapshot.hasError) {
           return const Center(
@@ -47,8 +59,8 @@ class _TaskPageState extends State<TaskPage> {
         final List<DocumentSnapshot> documents = snapshot.data!.docs;
 
         if (documents.isEmpty) {
-          return const Center(
-            child: Text('No tasks found.'),
+          return Center(
+            child: Lottie.asset("assets/tasks.json"),
           );
         }
 
@@ -71,10 +83,29 @@ class _TaskPageState extends State<TaskPage> {
               onDismissed: (direction) {
                 _deleteTask(task.id);
               },
-              child: Card(
-                child: ListTile(
-                  title: Text(task['title']),
-                  subtitle: Text(DateFormat('yyyy-MM-dd').format(task['timestamp'].toDate())),
+              child: InkWell(
+                onTap: () {
+                  Fluttertoast.showToast(
+                    msg: 'swipe left to delete task',
+                    toastLength: Toast.LENGTH_SHORT,
+                    gravity: ToastGravity.SNACKBAR,
+                    timeInSecForIosWeb: 1,
+                    backgroundColor: Colors.black,
+                    textColor: Colors.white,
+                    fontSize: 16.0,
+                  );
+                },
+                child: Card(
+                  child: ListTile(
+                    title: Text(task['title'],
+                        style: const TextStyle(
+                            fontSize: 16, fontWeight: FontWeight.bold)),
+                    subtitle: Text(
+                      DateFormat('EEE, M/d/y')
+                          .format(task['timestamp'].toDate()),
+                      style: const TextStyle(fontSize: 12),
+                    ),
+                  ),
                 ),
               ),
             );
@@ -126,14 +157,18 @@ class _TaskPageState extends State<TaskPage> {
   void _saveTask() {
     final String title = _textEditingController.text.trim();
     if (title.isNotEmpty) {
-      FirebaseFirestore.instance.collection('tasks').add({
-        'title': title,
-        'timestamp': Timestamp.now(),
-      }).then((_) {
-        _textEditingController.clear();
-      }).catchError((error) {
-        print("Error adding task: $error");
-      });
+      final currentUser = FirebaseAuth.instance.currentUser;
+      if (currentUser != null) {
+        FirebaseFirestore.instance.collection('tasks').add({
+          'userId': currentUser.uid,
+          'title': title,
+          'timestamp': Timestamp.now(),
+        }).then((_) {
+          _textEditingController.clear();
+        }).catchError((error) {
+          print("Error adding task: $error");
+        });
+      }
     }
   }
 }

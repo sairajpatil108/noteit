@@ -1,8 +1,9 @@
+// ignore_for_file: camel_case_types, no_leading_underscores_for_local_identifiers, avoid_print
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 import 'package:noteit/main.dart';
-import 'package:noteit/ui/linkpage.dart';
 import 'package:sign_in_button/sign_in_button.dart';
 
 class loginPage extends StatefulWidget {
@@ -38,24 +39,27 @@ class _loginPageState extends State<loginPage> {
     return Center(
       child: SizedBox(
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Lottie.asset('assets/animation_lmdqbm1f.json', height: 200),
-              SignInButton(
-                Buttons.google,
-                text: 'Sign in with Google',
-                onPressed: () {
-                  _handleGoogleSignin();
-                },
-              ),
-            ],
-          )),
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Lottie.asset('assets/diary.json', height: 200),
+          SizedBox(
+            height: 40,
+          ),
+          SignInButton(
+            Buttons.google,
+            text: 'Sign in with Google',
+            onPressed: () {
+              _handleGoogleSignin();
+            },
+          ),
+        ],
+      )),
     );
   }
 
   Widget _userInfo() {
-    return MyHomePage();
+    return const MyHomePage();
   }
 
   void _handleGoogleSignin() {
@@ -92,18 +96,25 @@ Widget profilePhoto(BuildContext context) {
                     ),
                   ),
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 20,
                 ),
                 profileName(),
-                SizedBox(height: 20),
+                const SizedBox(height: 20),
                 ElevatedButton(
                   onPressed: () {
                     _logout();
-                    Navigator.pop(context); 
+                    Navigator.pop(context);
                   },
-                  child: Text('Logout'),
+                  child: const Text('Logout'),
                 ),
+                SizedBox(
+                  height: 10,
+                ),
+                Text("developed by sairajpatil108",
+                    style: TextStyle(
+                      fontSize: 10,
+                    )),
               ],
             ),
           );
@@ -130,7 +141,8 @@ void _logout() {
 }
 
 Widget profileName() {
-  return Container(child: Text(_user!.email!, style: TextStyle(fontSize: 15)));
+  return Container(
+      child: Text(_user!.email!, style: const TextStyle(fontSize: 15)));
 }
 
 Future<bool> isUserLoggedIn() async {

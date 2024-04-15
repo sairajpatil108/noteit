@@ -28,7 +28,7 @@ class FullScreenImagePage extends StatelessWidget {
               children: [
                 ElevatedButton(
                   onPressed: onDelete,
-                  child: Text('Delete'),
+                  child: const Text('Delete'),
                 ),
               ],
             ),
