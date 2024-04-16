@@ -55,7 +55,7 @@ class _CompleteNotePageState extends State<CompleteNotePage> {
                   labelText: 'Content',
                   border: OutlineInputBorder(),
                 ),
-                maxLines: null, // Allows unlimited lines
+              maxLines: null, 
                 keyboardType: TextInputType.multiline,
               ),
             ],

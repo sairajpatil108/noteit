@@ -34,7 +34,7 @@ class _TaskPageState extends State<TaskPage> {
   Widget _buildTasksList() {
     final currentUser = FirebaseAuth.instance.currentUser;
     if (currentUser == null) {
-      // If user is not logged in, return an empty container
+  
       return Container();
     }
 
@@ -120,7 +120,7 @@ class _TaskPageState extends State<TaskPage> {
       await FirebaseFirestore.instance.collection('tasks').doc(taskId).delete();
     } catch (e) {
       print("Error deleting task: $e");
-      // Handle error if needed
+    
     }
   }
 
@@ -172,3 +172,5 @@ class _TaskPageState extends State<TaskPage> {
     }
   }
 }
+
+

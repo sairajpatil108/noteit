@@ -1,4 +1,4 @@
-// ignore_for_file: avoid_print, deprecated_member_use
+
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -27,15 +27,15 @@ class _NotepageState extends State<Notepage> {
   }
 
   Future<void> _addNote() async {
-    // Ensure user is signed in
+   
     User? user = _auth.currentUser;
     if (user == null) {
-      // Handle if user is not signed in
+ 
       print('User not signed in');
       return;
     }
 
-    // Navigate to the add note page
+ 
     Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => const AddNotePage()),
@@ -67,7 +67,7 @@ class _NotepageState extends State<Notepage> {
   Widget _buildNotesList() {
     final currentUser = FirebaseAuth.instance.currentUser;
     if (currentUser == null) {
-      // If user is not logged in, return an empty container
+   
       return Container();
     }
 
@@ -115,21 +115,23 @@ class _NotepageState extends State<Notepage> {
                 itemBuilder: (context, index) {
                   var note = documents[index];
                   return Draggable(
-                    feedback: Card(
-                      color: const Color.fromARGB(255, 253, 121, 112),
+                    feedback: const Card(
+                      color: Color.fromARGB(255, 253, 121, 112),
                       elevation: 6,
                       child: Padding(
-                        padding: const EdgeInsets.all(8.0),
+                        padding: EdgeInsets.all(8.0),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
+                            SizedBox(height: 8),
                             Text(
-                              "Drag to delete",
-                              style: const TextStyle(
+                              "Drag your finger\n on bin to delete",
+                              style: TextStyle(
                                 fontWeight: FontWeight.bold,
                                 fontSize: 12,
                               ),
                             ),
+                            SizedBox(height: 15),
                           ],
                         ),
                       ),
@@ -162,7 +164,7 @@ class _NotepageState extends State<Notepage> {
                               const SizedBox(height: 8),
                               LimitedBox(
                                 maxHeight:
-                                    100, // Adjust the maxHeight as needed to accommodate 5 lines of text
+                                    100,  
                                 child: Text(
                                   note['content'],
                                   maxLines: 5,
@@ -199,11 +201,8 @@ class _NotepageState extends State<Notepage> {
                         child: Card(
                           shape: CircleBorder(),
                           color: Color.fromARGB(255, 249, 108, 98),
-                          child: Padding(
-                            padding: EdgeInsets.all(20.0),
-                            child:
-                                Icon(Icons.delete_rounded, color: Colors.white),
-                          ),
+                          child: Lottie.asset("assets/deleteAnimation.json",
+                              height: 70, width: 70),
                         ),
                       );
                     },

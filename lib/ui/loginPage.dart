@@ -1,5 +1,4 @@
-// ignore_for_file: camel_case_types, no_leading_underscores_for_local_identifiers, avoid_print
-
+ 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
@@ -43,7 +42,7 @@ class _loginPageState extends State<loginPage> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Lottie.asset('assets/diary.json', height: 200),
-          SizedBox(
+          const SizedBox(
             height: 40,
           ),
           SignInButton(
@@ -83,16 +82,16 @@ Widget profilePhoto(BuildContext context) {
               mainAxisSize: MainAxisSize.min,
               children: [
                 CircleAvatar(
-                  radius: 50, // Adjust the radius as needed
+                  radius: 50,  
                   backgroundColor:
-                      Colors.transparent, // Make the background transparent
+                      Colors.transparent,  
                   child: ClipOval(
                     child: Image.network(
                       _user!.photoURL!,
-                      width: 100, // Set the width and height of the image
+                      width: 100,  
                       height: 100,
                       fit: BoxFit
-                          .cover, // Ensure the image covers the circular frame
+                          .cover,  
                     ),
                   ),
                 ),
@@ -108,10 +107,10 @@ Widget profilePhoto(BuildContext context) {
                   },
                   child: const Text('Logout'),
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 10,
                 ),
-                Text("developed by sairajpatil108",
+                const Text("developed by sairajpatil108",
                     style: TextStyle(
                       fontSize: 10,
                     )),
@@ -122,14 +121,14 @@ Widget profilePhoto(BuildContext context) {
       );
     },
     child: CircleAvatar(
-      radius: 25, // Adjust the radius as needed
-      backgroundColor: Colors.transparent, // Make the background transparent
+      radius: 25, 
+      backgroundColor: Colors.transparent,  
       child: ClipOval(
         child: Image.network(
           _user!.photoURL!,
-          width: 40, // Set the width and height of the image
+          width: 40,  
           height: 40,
-          fit: BoxFit.cover, // Ensure the image covers the circular frame
+          fit: BoxFit.cover,  
         ),
       ),
     ),
@@ -147,5 +146,5 @@ Widget profileName() {
 
 Future<bool> isUserLoggedIn() async {
   final _user = FirebaseAuth.instance.currentUser;
-  return _user != null; // Return true if user is logged in, false otherwise
+  return _user != null;  
 }

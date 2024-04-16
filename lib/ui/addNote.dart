@@ -1,4 +1,4 @@
-// ignore_for_file: library_private_types_in_public_api, use_build_context_synchronously
+
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -17,7 +17,7 @@ class _AddNotePageState extends State<AddNotePage> {
 
   Future<void> _addNote() async {
     if (_titleController.text.isEmpty || _contentController.text.isEmpty) {
-      // Show error message if title or content is empty
+    
       showDialog(
         context: context,
         builder: (context) => AlertDialog(
@@ -35,7 +35,7 @@ class _AddNotePageState extends State<AddNotePage> {
     }
 
     try {
-      // Add the note to Firestore
+     
       await FirebaseFirestore.instance.collection('user_notes').add({
         'title': _titleController.text,
         'content': _contentController.text,
@@ -43,10 +43,10 @@ class _AddNotePageState extends State<AddNotePage> {
         'userId': FirebaseAuth.instance.currentUser!.uid,
       });
 
-      // Close the add note page
+    
       Navigator.pop(context);
     } catch (error) {
-      // Show error message if adding note fails
+    
       showDialog(
         context: context,
         builder: (context) => AlertDialog(

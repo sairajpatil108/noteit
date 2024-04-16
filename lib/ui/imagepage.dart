@@ -1,4 +1,4 @@
-// ignore_for_file: avoid_print
+ 
 
 import 'dart:async';
 import 'dart:io';
@@ -34,7 +34,7 @@ class _ImagePageState extends State<ImagePage> {
   @override
   void dispose() {
     super.dispose();
-    // No need to dispose ImagePicker
+    
   }
 
   Future<void> _loadImages() async {
@@ -56,7 +56,7 @@ class _ImagePageState extends State<ImagePage> {
         urls.add(downloadURL);
       });
 
-      // Check if the widget is mounted before calling setState
+       
       if (mounted) {
         setState(() {
           imageUrls = urls;
@@ -86,21 +86,21 @@ class _ImagePageState extends State<ImagePage> {
       await uploadTask.whenComplete(() {
         setState(() {
           _isLoading = false;
-          _loadImages(); // Reload images after upload
+          _loadImages();  
           Fluttertoast.showToast(msg: 'Image uploaded successfully!');
         });
       });
     } else {
       print('No image selected.');
       setState(() {
-        _isLoading = false; // Reset isLoading flag if no image is selected
+        _isLoading = false; 
       });
     }
   }
 
   void _deleteImage(String imageUrl) async {
     await FirebaseStorage.instance.refFromURL(imageUrl).delete();
-    // Check if the widget is mounted before calling setState
+    
     if (mounted) {
       setState(() {
         _loadImages();
@@ -118,8 +118,8 @@ class _ImagePageState extends State<ImagePage> {
       ),
       body: _isLoading
           ? Center(
-              child:
-                  Lottie.asset('assets/loading.json', height: 120, width: 120),
+              child: Lottie.asset('assets/loadingAnimation.json',
+                  height: 120, width: 120),
             )
           : imageUrls.isEmpty
               ? const Center(
@@ -150,7 +150,7 @@ class _ImagePageState extends State<ImagePage> {
                           padding: const EdgeInsets.all(8.0),
                           child: ClipRRect(
                             borderRadius: BorderRadius.circular(
-                                10), // Adjust the value as needed
+                                10),  
                             child: Image.network(
                               imageUrls[index],
                               fit: BoxFit.cover,
