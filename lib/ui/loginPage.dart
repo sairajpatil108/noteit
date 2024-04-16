@@ -1,5 +1,7 @@
+ 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:lottie/lottie.dart';
 import 'package:noteit/main.dart';
 import 'package:sign_in_button/sign_in_button.dart';
 
@@ -35,19 +37,28 @@ class _loginPageState extends State<loginPage> {
   Widget _googleSignInButton() {
     return Center(
       child: SizedBox(
-          height: 50,
-          child: SignInButton(
+          child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Lottie.asset('assets/diary.json', height: 200),
+          const SizedBox(
+            height: 40,
+          ),
+          SignInButton(
             Buttons.google,
             text: 'Sign in with Google',
             onPressed: () {
               _handleGoogleSignin();
             },
-          )),
+          ),
+        ],
+      )),
     );
   }
 
   Widget _userInfo() {
-    return MyHomePage();
+    return const MyHomePage();
   }
 
   void _handleGoogleSignin() {
@@ -71,33 +82,38 @@ Widget profilePhoto(BuildContext context) {
               mainAxisSize: MainAxisSize.min,
               children: [
                 CircleAvatar(
-                  radius: 50, // Adjust the radius as needed
+                  radius: 50,  
                   backgroundColor:
-                      Colors.transparent, // Make the background transparent
+                      Colors.transparent,  
                   child: ClipOval(
                     child: Image.network(
                       _user!.photoURL!,
-                      width: 100, // Set the width and height of the image
+                      width: 100,  
                       height: 100,
                       fit: BoxFit
-                          .cover, // Ensure the image covers the circular frame
+                          .cover,  
                     ),
                   ),
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 20,
                 ),
                 profileName(),
-                SizedBox(height: 20),
+                const SizedBox(height: 20),
                 ElevatedButton(
                   onPressed: () {
-                    // Handle logout action here
-                    // Example: Call logout function
                     _logout();
-                    Navigator.pop(context); // Close the dialog
+                    Navigator.pop(context);
                   },
-                  child: Text('Logout'),
+                  child: const Text('Logout'),
                 ),
+                const SizedBox(
+                  height: 10,
+                ),
+                const Text("developed by sairajpatil108",
+                    style: TextStyle(
+                      fontSize: 10,
+                    )),
               ],
             ),
           );
@@ -105,14 +121,14 @@ Widget profilePhoto(BuildContext context) {
       );
     },
     child: CircleAvatar(
-      radius: 25, // Adjust the radius as needed
-      backgroundColor: Colors.transparent, // Make the background transparent
+      radius: 25, 
+      backgroundColor: Colors.transparent,  
       child: ClipOval(
         child: Image.network(
           _user!.photoURL!,
-          width: 40, // Set the width and height of the image
+          width: 40,  
           height: 40,
-          fit: BoxFit.cover, // Ensure the image covers the circular frame
+          fit: BoxFit.cover,  
         ),
       ),
     ),
@@ -124,5 +140,11 @@ void _logout() {
 }
 
 Widget profileName() {
-  return Container(child: Text(_user!.email!, style: TextStyle(fontSize: 15)));
+  return Container(
+      child: Text(_user!.email!, style: const TextStyle(fontSize: 15)));
+}
+
+Future<bool> isUserLoggedIn() async {
+  final _user = FirebaseAuth.instance.currentUser;
+  return _user != null;  
 }

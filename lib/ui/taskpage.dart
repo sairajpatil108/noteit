@@ -1,132 +1,176 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:intl/intl.dart';
+import 'package:lottie/lottie.dart';
 
-class taskpage extends StatefulWidget {
-  const taskpage({super.key});
+class TaskPage extends StatefulWidget {
+  const TaskPage({Key? key}) : super(key: key);
 
   @override
-  State<taskpage> createState() => _taskpageState();
+  State<TaskPage> createState() => _TaskPageState();
 }
 
-class _taskpageState extends State<taskpage> {
+class _TaskPageState extends State<TaskPage> {
+  final TextEditingController _textEditingController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: ListView(
-        children: [
-          Container(
-            height: 100,
-            width: 100,
-            decoration: BoxDecoration(
-              color: Color.fromARGB(255, 255, 201, 201),
-              borderRadius: BorderRadius.circular(20),
-            ),
-          ),
-        ],
+      body: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: _buildTasksList(),
       ),
       floatingActionButton: FloatingActionButton(
-        shape: CircleBorder(),
-        child: Icon(Icons.task),
+        child: const Icon(Icons.add),
         onPressed: () {
-          _showBottomSheet(context);
+          _showAddTaskDialog(context);
         },
       ),
     );
   }
-}
 
-class Checkbox_custom extends StatefulWidget {
-  const Checkbox_custom({super.key});
-
-  @override
-  State<Checkbox_custom> createState() => _Checkbox_customState();
-}
-
-class _Checkbox_customState extends State<Checkbox_custom> {
-  bool isChecked = false;
-
-  @override
-  Widget build(BuildContext context) {
-    Color getColor(Set<MaterialState> states) {
-      const Set<MaterialState> interactiveStates = <MaterialState>{
-        MaterialState.pressed,
-        MaterialState.hovered,
-        MaterialState.focused,
-      };
-      if (states.any(interactiveStates.contains) == false) {
-        return Color.fromARGB(255, 52, 255, 157);
-      } else
-        return const Color.fromARGB(255, 255, 149, 142);
+  Widget _buildTasksList() {
+    final currentUser = FirebaseAuth.instance.currentUser;
+    if (currentUser == null) {
+  
+      return Container();
     }
 
-    return Checkbox(
-      shape: CircleBorder(),
-      checkColor: Color.fromARGB(255, 255, 201, 201),
-      fillColor: MaterialStateProperty.resolveWith(getColor),
-      value: isChecked,
-      onChanged: (bool? value) {
-        setState(() {
-          isChecked = value!;
-        });
+    return StreamBuilder<QuerySnapshot>(
+      stream: FirebaseFirestore.instance
+          .collection('tasks')
+          .where('userId', isEqualTo: currentUser.uid)
+          .snapshots(),
+      builder: (context, snapshot) {
+        if (snapshot.hasError) {
+          return const Center(
+            child: Text('Error'),
+          );
+        }
+
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Center(
+            child: CircularProgressIndicator(),
+          );
+        }
+
+        final List<DocumentSnapshot> documents = snapshot.data!.docs;
+
+        if (documents.isEmpty) {
+          return Center(
+            child: Lottie.asset("assets/tasks.json"),
+          );
+        }
+
+        return ListView.builder(
+          itemCount: documents.length,
+          itemBuilder: (context, index) {
+            final task = documents[index];
+            return Dismissible(
+              key: Key(task.id),
+              background: Container(
+                color: const Color.fromARGB(255, 246, 137, 129),
+                alignment: Alignment.centerRight,
+                padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                child: const Icon(
+                  Icons.delete,
+                  color: Color.fromARGB(255, 0, 0, 0),
+                ),
+              ),
+              direction: DismissDirection.endToStart,
+              onDismissed: (direction) {
+                _deleteTask(task.id);
+              },
+              child: InkWell(
+                onTap: () {
+                  Fluttertoast.showToast(
+                    msg: 'swipe left to delete task',
+                    toastLength: Toast.LENGTH_SHORT,
+                    gravity: ToastGravity.SNACKBAR,
+                    timeInSecForIosWeb: 1,
+                    backgroundColor: Colors.black,
+                    textColor: Colors.white,
+                    fontSize: 16.0,
+                  );
+                },
+                child: Card(
+                  child: ListTile(
+                    title: Text(task['title'],
+                        style: const TextStyle(
+                            fontSize: 16, fontWeight: FontWeight.bold)),
+                    subtitle: Text(
+                      DateFormat('EEE, M/d/y')
+                          .format(task['timestamp'].toDate()),
+                      style: const TextStyle(fontSize: 12),
+                    ),
+                  ),
+                ),
+              ),
+            );
+          },
+        );
       },
     );
   }
-}
 
-void _showBottomSheet(BuildContext context) {
-  showModalBottomSheet(
-    context: context,
-    isScrollControlled: true,
-    backgroundColor: Colors.transparent,
-    builder: (context) => Container(
-      height: MediaQuery.of(context).size.height * 0.85,
-      decoration: new BoxDecoration(
-        color: Colors.white,
-        borderRadius: new BorderRadius.only(
-          topLeft: const Radius.circular(25.0),
-          topRight: const Radius.circular(25.0),
-        ),
-      ),
-      child: Center(
-        child: Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: SizedBox(
-                child: Icon(
-                  Icons.add_task_rounded,
-                  size: 50,
-                  color: Color.fromARGB(255, 52, 255, 157),
-                ),
-                height: 60,
-              ),
-            ),
-            Padding(
-              padding: EdgeInsets.fromLTRB(50, 8, 50, 8),
-              child: TextFormField(
-                decoration: InputDecoration(hintText: "Task"),
-              ),
-            ),
-            SizedBox(
-              height: 5,
-            ),
-            Padding(
-              padding: EdgeInsets.fromLTRB(50, 8, 50, 8),
-              child: TextFormField(
-                decoration: InputDecoration(hintText: "Discription"),
-              ),
-            ),
-            SizedBox(
-              height: MediaQuery.of(context).size.height * 0.15,
-            ),
-            ElevatedButton(
+  Future<void> _deleteTask(String taskId) async {
+    try {
+      await FirebaseFirestore.instance.collection('tasks').doc(taskId).delete();
+    } catch (e) {
+      print("Error deleting task: $e");
+    
+    }
+  }
+
+  void _showAddTaskDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('Add Task'),
+          content: TextField(
+            controller: _textEditingController,
+            decoration: const InputDecoration(hintText: 'Enter task title'),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('Cancel'),
               onPressed: () {
-                Navigator.of(context).pop(); // Close the bottom sheet
+                Navigator.of(context).pop();
               },
-              child: Text('Save'),
+            ),
+            TextButton(
+              child: const Text('Save'),
+              onPressed: () {
+                _saveTask();
+                Navigator.of(context).pop();
+              },
             ),
           ],
-        ),
-      ),
-    ),
-  );
+        );
+      },
+    );
+  }
+
+  void _saveTask() {
+    final String title = _textEditingController.text.trim();
+    if (title.isNotEmpty) {
+      final currentUser = FirebaseAuth.instance.currentUser;
+      if (currentUser != null) {
+        FirebaseFirestore.instance.collection('tasks').add({
+          'userId': currentUser.uid,
+          'title': title,
+          'timestamp': Timestamp.now(),
+        }).then((_) {
+          _textEditingController.clear();
+        }).catchError((error) {
+          print("Error adding task: $error");
+        });
+      }
+    }
+  }
 }
+
+
